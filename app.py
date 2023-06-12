@@ -16,7 +16,7 @@ Classes_reversed = Classes[::-1]
 # Load the model
 @st.cache_resource
 def load_model():
-    model_path = r"C:\Users\User\Documents\groceries-image-recognition\resnet50_frozen_model"
+    model_path = "/Users/nwjun/Downloads/resnet50_frozen_model"
     model = tf.keras.saving.load_model(model_path)
     return model
 
