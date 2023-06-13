@@ -148,8 +148,9 @@ def recipe_recommender_page():
         orientation="horizontal",
     )
 
+    recipe_model: Model = RECIPE_MODEL_FAC[recipe_arch]
     if recipe_arch == "TFIDF Vectorizer":
-        st.write("model1 is used")
+        st.write(recipe_model.format_output(", ".join(ingredients)))
     elif recipe_arch == "Attention Encoder-Decoder":
         calorie = st.selectbox('#### What calorie level are you currently aiming for?',('<Select>','Low', 'Medium', 'High'))
         if calorie == '<Select>':
@@ -163,7 +164,7 @@ def recipe_recommender_page():
             'Medium': 1,
             'High': 2
         }
-        calorie_value = calorie_mapping[calorie] 
+        calorie_value = calorie_mapping[calorie]
         food_value = food.strip()
         ingredient_value = [item.strip() for item in ingredient.split(",")]
 
@@ -175,10 +176,6 @@ def recipe_recommender_page():
 
         if (personalized_recipe):
             attentionModel
-
-    recipe_model: Model = RECIPE_MODEL_FAC[recipe_arch]
-    # TODO: present recipe
-    # st.write(recipe_model.format_output(", ".join(ingredients)))
 
 
 # Make a prediction
@@ -193,8 +190,10 @@ def ingredient_cls_predict(image, model):
 
     return prediction
 
+
 def attentionModel(calorie, food, ingredient):
     return calorie, food, ingredient
+
 
 if __name__ == "__main__":
     st.markdown(
