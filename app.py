@@ -5,13 +5,47 @@ from PIL import Image
 from streamlit_option_menu import option_menu
 from st_on_hover_tabs import on_hover_tabs
 
-st.set_page_config(layout='wide')
+st.set_page_config(layout="wide")
 
-INGREDIENT_CLS_CLASSES = ['Zucchini', 'Yoghurt', 'Tomato', 'Soyghurt', 'Sour-Cream', 'Satsumas', 'Red-Grapfruit', 'Red-Beet',
-           'Potato', 'Pomegranate', 'Pineapple', 'Pepper', 'Pear', 'Peach', 'Passion-Fruit', 'Orange', 'Onion',
-           'Oatghurt', 'Oat-Milk', 'Milk', 'Melon', 'Mango', 'Lime', 'Lemon', 'Leek', 'Kiwi', 'Juice', 'Ginger',
-           'Cucumber', 'Carrots', 'Cabbage', 'Brown-Cap-Mushroom', 'Banana', 'Avocado', 'Aubergine', 'Asparagus',
-           'Apple']
+INGREDIENT_CLS_CLASSES = [
+    "Zucchini",
+    "Yoghurt",
+    "Tomato",
+    "Soyghurt",
+    "Sour-Cream",
+    "Satsumas",
+    "Red-Grapfruit",
+    "Red-Beet",
+    "Potato",
+    "Pomegranate",
+    "Pineapple",
+    "Pepper",
+    "Pear",
+    "Peach",
+    "Passion-Fruit",
+    "Orange",
+    "Onion",
+    "Oatghurt",
+    "Oat-Milk",
+    "Milk",
+    "Melon",
+    "Mango",
+    "Lime",
+    "Lemon",
+    "Leek",
+    "Kiwi",
+    "Juice",
+    "Ginger",
+    "Cucumber",
+    "Carrots",
+    "Cabbage",
+    "Brown-Cap-Mushroom",
+    "Banana",
+    "Avocado",
+    "Aubergine",
+    "Asparagus",
+    "Apple",
+]
 
 # Reverse the Classes list
 INGREDIENT_CLS_CLASSES = INGREDIENT_CLS_CLASSES[::-1]
@@ -34,34 +68,40 @@ def load_recipe_model_demo():
 
 def main():
     st.title("RecRes App")
-    
+
     with st.sidebar:
-        tabs = on_hover_tabs(tabName=['Recipe', 'Restaurant'], 
-                             iconName=['cooking', 'money'], default_choice=0)
-        
-    if tabs.lower() == 'recipe':
+        tabs = on_hover_tabs(
+            tabName=["Recipe", "Restaurant"],
+            iconName=["soup_kitchen", "restaurant"],
+            default_choice=0,
+        )
+
+    if tabs.lower() == "recipe":
         recipe_recommender_page()
-        
-    elif tabs.lower() == 'restaurant':
+
+    elif tabs.lower() == "restaurant":
         st.write("## sss")
-        
+
+
 def recipe_recommender_page():
     # TODO: Add other model
     RECIPE_MODEL_FAC = {
-        'model1': load_recipe_model_demo,
-        'model2': load_recipe_model_demo
+        "model1": load_recipe_model_demo,
+        "model2": load_recipe_model_demo,
     }
-    
+
     st.write("## Recipe Recommender")
     ingredient_cls_model = load_ingredient_cls_model()
-    st.write('### 1. What ingredients do you have?')
-    st.write('#### Lazy to type? Just take a picture of them!')
+    st.write("### 1. What ingredients do you have?")
+    st.write("#### Lazy to type? Just take a picture of them!")
     st.info(f'Currently only able to detect {", ".join(INGREDIENT_CLS_CLASSES)}')
-    files = st.file_uploader("Upload images", type=["jpg", "jpeg"], accept_multiple_files=True)
+    files = st.file_uploader(
+        "Upload images", type=["jpg", "jpeg"], accept_multiple_files=True
+    )
     ingredients = []
     images = []
     num_cols = 5
-    
+
     if files is not None:
         with st.spinner("Loading..."):
             for file in files:
@@ -72,31 +112,40 @@ def recipe_recommender_page():
                 # Make the prediction
                 prediction = ingredient_cls_predict(image, ingredient_cls_model)
                 ingredients.append(INGREDIENT_CLS_CLASSES[prediction.argmax()])
-            
-        num_rows = max(((len(files) + 1) // num_cols) if num_cols != 1 else len(files), 1)
+
+        num_rows = max(
+            ((len(files) + 1) // num_cols) if num_cols != 1 else len(files), 1
+        )
         for r in range(num_rows):
             cols = st.columns(num_cols)
             for c in range(num_cols):
-                idx = r*num_cols+c
-                if idx >= len(files): break
+                idx = r * num_cols + c
+                if idx >= len(files):
+                    break
                 cols[c].image(images[idx], width=150, caption=ingredients[idx])
-                
+
     st.write('#### Ops, detection failed? You can add them manually ><"')
-    text_inp_ingredients = st.text_input(label="Ingredient(s), separate them by ', ' (with space). E.g: Apple, orange")
-    text_inp_ingredients = text_inp_ingredients.split(', ')
+    text_inp_ingredients = st.text_input(
+        label="Ingredient(s), separate them by ', ' (with space). E.g: Apple, orange"
+    )
+    text_inp_ingredients = text_inp_ingredients.split(", ")
     ingredients.extend(text_inp_ingredients)
     st.write(f'Your ingredient(s): {", ".join(ingredients)}')
-        
-    st.write('### 2. Get your personalized recipe!')
-    recipe_arch = option_menu(None, ["model1", "model2"],
-                icons=['0-square', '1-square'], default_index=0,
-                orientation='horizontal')
-    
-    if recipe_arch == 'demo':
-        st.write('model1 is used')
-    elif recipe_arch == 'model2':
-        st.write('model2 is used')
-        
+
+    st.write("### 2. Get your personalized recipe!")
+    recipe_arch = option_menu(
+        None,
+        ["model1", "model2"],
+        icons=["0-square", "1-square"],
+        default_index=0,
+        orientation="horizontal",
+    )
+
+    if recipe_arch == "model1":
+        st.write("model1 is used")
+    elif recipe_arch == "model2":
+        st.write("model2 is used")
+
     recipe_model = RECIPE_MODEL_FAC[recipe_arch]
     # TODO: present recipe
 
@@ -115,4 +164,7 @@ def ingredient_cls_predict(image, model):
 
 
 if __name__ == "__main__":
+    st.markdown(
+        "<style>" + open("./style.scss").read() + "</style>", unsafe_allow_html=True
+    )
     main()
