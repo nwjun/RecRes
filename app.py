@@ -6,6 +6,9 @@ from streamlit_option_menu import option_menu
 from st_on_hover_tabs import on_hover_tabs
 from os import path as osp
 
+from model_controller.Model import Model
+from model_controller.TFIDFModel import TFIDFModel
+
 st.set_page_config(layout="wide")
 
 INGREDIENT_CLS_CLASSES = [
@@ -89,7 +92,7 @@ def main():
 def recipe_recommender_page():
     # TODO: Add other model
     RECIPE_MODEL_FAC = {
-        "model1": load_recipe_model_demo,
+        "TFIDF Vectorizer": TFIDFModel(),
         "model2": load_recipe_model_demo,
     }
 
@@ -138,7 +141,7 @@ def recipe_recommender_page():
     st.write("### 2. Get your personalized recipe!")
     recipe_arch = option_menu(
         None,
-        ["model1", "model2"],
+        ["TFIDF Vectorizer", "model2"],
         icons=["0-square", "1-square"],
         default_index=0,
         orientation="horizontal",
@@ -149,8 +152,9 @@ def recipe_recommender_page():
     elif recipe_arch == "model2":
         st.write("model2 is used")
 
-    recipe_model = RECIPE_MODEL_FAC[recipe_arch]
+    recipe_model: Model = RECIPE_MODEL_FAC[recipe_arch]
     # TODO: present recipe
+    st.write(recipe_model.format_output(", ".join(ingredients)))
 
 
 # Make a prediction
