@@ -12,7 +12,7 @@ import unidecode as unidecode
 from nltk.stem import WordNetLemmatizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-nltk.download("ordnet")
+nltk.download("wordnet")
 
 
 class TFIDFModel(Model):
@@ -144,7 +144,6 @@ class TFIDFModel(Model):
         res = ""
         for i in range(len(output)):
             recipe_data = output[i]
-            print(recipe_data)
             res += f"""
 ### {i + 1}. {recipe_data["recipe"]}
 #### Matching Score
