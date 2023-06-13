@@ -6,7 +6,7 @@
 
 Download all models and put them under [/saved_models](saved_models)
 - Ingredients Image Classification [[Download](https://drive.google.com/drive/folders/14bD6szRrTCwEss9i5jHvZ0mNyCOLuava?usp=drive_link)]
-
+- Cuisine Classification [[Download](https://drive.google.com/file/d/1-jsCInkVSk9To1r0nWCZW8GUx45134VK/view?usp=sharing)]
 ### Installation
 
 ```bash
