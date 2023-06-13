@@ -58,10 +58,11 @@ INGREDIENT_CLS_CLASSES = INGREDIENT_CLS_CLASSES[::-1]
 # Load the model
 @st.cache_resource
 def load_ingredient_cls_model():
-    model_path = osp.join(
-        "saved_models", "groceries-image-recognition", "resnet50_frozen_model"
-    )
-    model = tf.keras.saving.load_model(model_path)
+    model = None
+    # model_path = osp.join(
+    #     "saved_models", "groceries-image-recognition", "resnet50_frozen_model"
+    # )
+    # model = tf.keras.saving.load_model(model_path)
     return model
 
 
@@ -93,7 +94,7 @@ def recipe_recommender_page():
     # TODO: Add other model
     RECIPE_MODEL_FAC = {
         "TFIDF Vectorizer": TFIDFModel(),
-        "model2": load_recipe_model_demo,
+        "Attention Encoder-Decoder": load_recipe_model_demo,
     }
 
     st.write("## Recipe Recommender")
@@ -141,20 +142,43 @@ def recipe_recommender_page():
     st.write("### 2. Get your personalized recipe!")
     recipe_arch = option_menu(
         None,
-        ["TFIDF Vectorizer", "model2"],
+        ["TFIDF Vectorizer", "Attention Encoder-Decoder"],
         icons=["0-square", "1-square"],
         default_index=0,
         orientation="horizontal",
     )
 
-    if recipe_arch == "model1":
+    if recipe_arch == "TFIDF Vectorizer":
         st.write("model1 is used")
-    elif recipe_arch == "model2":
-        st.write("model2 is used")
+    elif recipe_arch == "Attention Encoder-Decoder":
+        calorie = st.selectbox('#### What calorie level are you currently aiming for?',('<Select>','Low', 'Medium', 'High'))
+        if calorie == '<Select>':
+            st.error('Please select a calorie level.')
+        food = st.text_input('#### What food are you craving for now?', placeholder='Big Mac Pizza')
+        ingredient = st.text_input('#### Please let me know what ingredients you have now.', placeholder='Beef, Thousand Island, Cheese')
+
+        calorie_mapping = {
+            '<Select>': None,
+            'Low': 0,
+            'Medium': 1,
+            'High': 2
+        }
+        calorie_value = calorie_mapping[calorie] 
+        food_value = food.strip()
+        ingredient_value = [item.strip() for item in ingredient.split(",")]
+
+        print(calorie_value)
+        print(food_value)
+        print(ingredient_value)
+
+        personalized_recipe = st.button('Find Out Now!')
+
+        if (personalized_recipe):
+            attentionModel
 
     recipe_model: Model = RECIPE_MODEL_FAC[recipe_arch]
     # TODO: present recipe
-    st.write(recipe_model.format_output(", ".join(ingredients)))
+    # st.write(recipe_model.format_output(", ".join(ingredients)))
 
 
 # Make a prediction
@@ -169,6 +193,8 @@ def ingredient_cls_predict(image, model):
 
     return prediction
 
+def attentionModel(calorie, food, ingredient):
+    return calorie, food, ingredient
 
 if __name__ == "__main__":
     st.markdown(
