@@ -1,5 +1,29 @@
 # Recipe and Restaurant Recommendation System (RecRes)
 
+## Demo
+
+### Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+#### [Mac Users Only]
+
+Pip-installed Tensorflow might not work, instead, install it with conda.
+```bash
+pip uninstall tensorflow
+conda install tensorflow
+```
+
+### Start Streamlit
+
+```python
+streamlit run app.py
+```
+
+---
+
 ## Related Datasets
 
 ### Recipe
