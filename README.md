@@ -2,6 +2,11 @@
 
 ## Demo
 
+### Models Weights
+
+Download all models and put them under [/saved_models](saved_models)
+- Ingredients Image Classification [[Download](https://drive.google.com/drive/folders/14bD6szRrTCwEss9i5jHvZ0mNyCOLuava?usp=drive_link)]
+
 ### Installation
 
 ```bash

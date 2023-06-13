@@ -4,6 +4,7 @@ import tensorflow as tf
 from PIL import Image
 from streamlit_option_menu import option_menu
 from st_on_hover_tabs import on_hover_tabs
+from os import path as osp
 
 st.set_page_config(layout="wide")
 
@@ -54,7 +55,9 @@ INGREDIENT_CLS_CLASSES = INGREDIENT_CLS_CLASSES[::-1]
 # Load the model
 @st.cache_resource
 def load_ingredient_cls_model():
-    model_path = "RecipeRecommender/groceries-image-recognition/resnet50_frozen_model"
+    model_path = osp.join(
+        "saved_models", "groceries-image-recognition", "resnet50_frozen_model"
+    )
     model = tf.keras.saving.load_model(model_path)
     return model
 
