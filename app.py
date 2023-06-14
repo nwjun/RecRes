@@ -60,11 +60,10 @@ INGREDIENT_CLS_CLASSES = INGREDIENT_CLS_CLASSES[::-1]
 # Load the model
 @st.cache_resource
 def load_ingredient_cls_model():
-    model = None
-    # model_path = osp.join(
-    #     "saved_models", "groceries-image-recognition", "resnet50_frozen_model"
-    # )
-    # model = tf.keras.saving.load_model(model_path)
+    model_path = osp.join(
+        "saved_models", "groceries-image-recognition", "resnet50_frozen_model"
+    )
+    model = tf.keras.saving.load_model(model_path)
     return model
 
 
@@ -76,7 +75,7 @@ def load_recipe_model_demo():
 
 
 def main():
-    st.title("RecRes App")
+    # st.title("RecRes App")
 
     with st.sidebar:
         tabs = on_hover_tabs(
@@ -96,7 +95,7 @@ def recipe_recommender_page():
     # TODO: Add other model
     RECIPE_MODEL_FAC = {
         "TFIDF Vectorizer": TFIDFModel(),
-        "Dov2Vec Model": D2VModel(),
+        "Doc2Vec Model": D2VModel(),
         "Attention Encoder-Decoder": load_recipe_model_demo,
     }
 
@@ -145,7 +144,7 @@ def recipe_recommender_page():
     st.write("### 2. Get your personalized recipe!")
     recipe_arch = option_menu(
         None,
-        ["TFIDF Vectorizer", "Dov2Vec Model", "Attention Encoder-Decoder"],
+        ["TFIDF Vectorizer", "Doc2Vec Model", "Attention Encoder-Decoder"],
         icons=["0-square", "1-square", "2-square"],
         default_index=0,
         orientation="horizontal",
@@ -154,15 +153,19 @@ def recipe_recommender_page():
     recipe_model: Model = RECIPE_MODEL_FAC[recipe_arch]
     if recipe_arch == "TFIDF Vectorizer":
         st.write(recipe_model.format_output(", ".join(ingredients)))
-    elif recipe_arch == "Dov2Vec Model":
+    elif recipe_arch == "Doc2Vec Model":
         recipe_model2: Model2 = RECIPE_MODEL_FAC[recipe_arch]
         if text_inp_ingredients is not None:
-            st.write(recipe_model2.get_cuisine(", ".join(ingredients)))
+            with st.spinner("Loading..."):
+                cuisine = recipe_model2.get_cuisine(", ".join(ingredients))
+            st.write(cuisine)
             text_inp_cuisine = st.text_input(
             label="If you choose Doc2Vec, please select one cuisine type,..."
             )
-        if text_inp_cuisine is not None:    
-            st.write(recipe_model2.get_recipes(", ".join(ingredients),text_inp_cuisine))
+        if text_inp_cuisine is not None:
+            with st.spinner("Loading..."):
+                recipes = recipe_model2.get_recipes(", ".join(ingredients),text_inp_cuisine)
+            st.write(recipes)
     elif recipe_arch == "Attention Encoder-Decoder":
         calorie = st.selectbox('#### What calorie level are you currently aiming for?',('<Select>','Low', 'Medium', 'High'))
         if calorie == '<Select>':
