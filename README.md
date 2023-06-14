@@ -7,6 +7,7 @@
 Download all models and put them under [/saved_models](saved_models)
 - Ingredients Image Classification [[Download](https://drive.google.com/drive/folders/14bD6szRrTCwEss9i5jHvZ0mNyCOLuava?usp=drive_link)]
 - Cuisine Classification [[Download](https://drive.google.com/file/d/1-jsCInkVSk9To1r0nWCZW8GUx45134VK/view?usp=sharing)]
+- Models for D2VModel, download the whole models folder and put in /saved_models [[Download](https://drive.google.com/drive/folders/1lBGBfxXnh_x80Qj_cYpRqE7_OcR8vjdq?usp=sharing)]
 ### Installation
 
 ```bash
