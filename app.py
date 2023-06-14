@@ -8,6 +8,8 @@ from os import path as osp
 
 from model_controller.Model import Model
 from model_controller.TFIDFModel import TFIDFModel
+from model_controller.Model2 import Model2
+from model_controller.D2VModel import D2VModel
 
 st.set_page_config(layout="wide")
 
@@ -94,6 +96,7 @@ def recipe_recommender_page():
     # TODO: Add other model
     RECIPE_MODEL_FAC = {
         "TFIDF Vectorizer": TFIDFModel(),
+        "Dov2Vec Model": D2VModel(),
         "Attention Encoder-Decoder": load_recipe_model_demo,
     }
 
@@ -142,8 +145,8 @@ def recipe_recommender_page():
     st.write("### 2. Get your personalized recipe!")
     recipe_arch = option_menu(
         None,
-        ["TFIDF Vectorizer", "Attention Encoder-Decoder"],
-        icons=["0-square", "1-square"],
+        ["TFIDF Vectorizer", "Dov2Vec Model", "Attention Encoder-Decoder"],
+        icons=["0-square", "1-square", "2-square"],
         default_index=0,
         orientation="horizontal",
     )
@@ -151,6 +154,15 @@ def recipe_recommender_page():
     recipe_model: Model = RECIPE_MODEL_FAC[recipe_arch]
     if recipe_arch == "TFIDF Vectorizer":
         st.write(recipe_model.format_output(", ".join(ingredients)))
+    elif recipe_arch == "Dov2Vec Model":
+        recipe_model2: Model2 = RECIPE_MODEL_FAC[recipe_arch]
+        if text_inp_ingredients is not None:
+            st.write(recipe_model2.get_cuisine(", ".join(ingredients)))
+            text_inp_cuisine = st.text_input(
+            label="If you choose Doc2Vec, please select one cuisine type,..."
+            )
+        if text_inp_cuisine is not None:    
+            st.write(recipe_model2.get_recipes(", ".join(ingredients),text_inp_cuisine))
     elif recipe_arch == "Attention Encoder-Decoder":
         calorie = st.selectbox('#### What calorie level are you currently aiming for?',('<Select>','Low', 'Medium', 'High'))
         if calorie == '<Select>':
