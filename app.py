@@ -5,11 +5,13 @@ from PIL import Image
 from streamlit_option_menu import option_menu
 from st_on_hover_tabs import on_hover_tabs
 from os import path as osp
+import time
 
 from model_controller.Model import Model
 from model_controller.TFIDFModel import TFIDFModel
 from model_controller.Model2 import Model2
 from model_controller.D2VModel import D2VModel
+from model_controller.attention.inference_MAIN import initiate_model, attention_inference
 
 st.set_page_config(layout="wide")
 
@@ -172,7 +174,7 @@ def recipe_recommender_page():
             st.error('Please select a calorie level.')
         food = st.text_input('#### What food are you craving for now?', placeholder='Big Mac Pizza')
         ingredient = st.text_input('#### Please let me know what ingredients you have now.', placeholder='Beef, Thousand Island, Cheese')
-
+        
         calorie_mapping = {
             '<Select>': None,
             'Low': 0,
@@ -190,7 +192,10 @@ def recipe_recommender_page():
         personalized_recipe = st.button('Find Out Now!')
 
         if (personalized_recipe):
-            attentionModel
+            ans = st.success('Please wait for a moment')
+            model, logit_mod, sample_method, ingr_map, memory_tensor_map = initiate_model()
+            answer = attention_inference(food_value, ingredient_value, calorie_value, model, logit_mod, sample_method, ingr_map, memory_tensor_map)
+            ans.success(answer)
 
 
 # Make a prediction
@@ -205,9 +210,6 @@ def ingredient_cls_predict(image, model):
 
     return prediction
 
-
-def attentionModel(calorie, food, ingredient):
-    return calorie, food, ingredient
 
 
 if __name__ == "__main__":
