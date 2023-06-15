@@ -10,7 +10,7 @@ Download all models and put them under [/saved_models](saved_models)
 - Cuisine Classification [[Download](https://drive.google.com/file/d/1-jsCInkVSk9To1r0nWCZW8GUx45134VK/view?usp=sharing)]
 - Models for D2VModel, download the whole models folder and put in /saved_models [[Download](https://drive.google.com/drive/folders/1lBGBfxXnh_x80Qj_cYpRqE7_OcR8vjdq?usp=sharing)]
 - Recipe Database for D2VModel, put it under RecRes folder. [[Download](https://drive.google.com/file/d/1QNrfE1Ibs6EuWMEluwhiocnLRhQKBuuK/view?usp=sharing)]
-- Models & Data for Attention Encoder Decoder, put the entire folder under saved_models folder. [[Download](https://drive.google.com/drive/folders/1MD-oBIp_43kt8vZNxl9SX0z9yjWdgHNW?usp=sharing)]
+- Models & Data for Attention Encoder Decoder, put the entire folder under saved_models folder. [[Download](https://drive.google.com/drive/folders/1Ysxu3OsSfOaKf0S7WWR4fjzqx4pTepNx?usp=sharing)]
 
 ### Installation
 
