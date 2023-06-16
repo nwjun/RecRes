@@ -11,6 +11,7 @@ import nltk
 import unidecode as unidecode
 from nltk.stem import WordNetLemmatizer
 from sklearn.metrics.pairwise import cosine_similarity
+from typing import Union
 
 nltk.download("wordnet")
 
@@ -22,7 +23,7 @@ class TFIDFModel(Model):
     tfidf = joblib.load(os.path.join("saved_models", "tfidf", "tfidf.joblib"))
     tfidf_recipe = joblib.load(os.path.join("saved_models", "tfidf", "tfidf_recipe.joblib"))
 
-    def ingredient_parser(self, ingredients: str | list):
+    def ingredient_parser(self, ingredients: Union[str, list]):
         measures = ["teaspoon", "t", "tsp.", "tablespoon" "T", "tbl.", "tb", "tbsp.", "fluid ounce", "fl oz", "ill",
                     "cup", "c" "pint", "p", "pt", "fl pt", "quart", "q", "qt", "fl qt", "gallon", "g", "gal", "ml",
                     "milliliter", "millilitre", "cc", "mL", "l", "liter", "litre", "L", "dl", "deciliter", "decilitre",

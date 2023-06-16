@@ -152,16 +152,8 @@ class D2VModel(Model2):
 
         # Extract cuisine names from results
         cuisines = [cuisine for cuisine, _ in results]
-        cuisine_string = ''
-        count = 1
-        for cuisine in cuisines:
-            cuisine_string += f"{count}: {cuisine}   "
-            count += 1
-    
 
-        return cuisine_string
-       
-
+        return cuisines
 
 
     def switch_cuisine(self, cuisine):

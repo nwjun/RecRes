@@ -339,7 +339,8 @@ def create_model(vocab_emb_dim, calorie_emb_dim, hidden_size, n_layers,
 
     if state_dict_path is not None:
         # Load model state dictionary
-        state_dict = torch.load(state_dict_path)
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        state_dict = torch.load(state_dict_path, map_location=device)
 
         # Load state dict
         model.load_state_dict(state_dict, strict=True)

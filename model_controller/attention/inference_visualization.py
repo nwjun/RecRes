@@ -36,7 +36,8 @@ def get_state_dict(saved_model_loc):
     state_dict_loc = os.path.join(models_folder, '{}.state_dict'.format(model_name))
 
     if os.path.exists(state_dict_loc):
-        state_dict = torch.load(state_dict_loc)
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        state_dict = torch.load(state_dict_loc, map_location=device)
         print('{} - Loaded {} state dict from {}'.format(
             datetime.now() - start, model_name, state_dict_loc
         ))

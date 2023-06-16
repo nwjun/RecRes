@@ -75,6 +75,8 @@ def load_recipe_model_demo():
     model = None
     return model
 
+def reset_recipe_button(button):
+    button = False
 
 def main():
     # st.title("RecRes App")
@@ -94,10 +96,9 @@ def main():
 
 
 def recipe_recommender_page():
-    # TODO: Add other model
     RECIPE_MODEL_FAC = {
-        "TFIDF Vectorizer": TFIDFModel(),
-        "Doc2Vec Model": D2VModel(),
+        "TFIDF Vectorizer": TFIDFModel,
+        "Doc2Vec Model": D2VModel,
         "Attention Encoder-Decoder": load_recipe_model_demo,
     }
 
@@ -112,8 +113,9 @@ def recipe_recommender_page():
     ingredients = []
     images = []
     num_cols = 5
-
-    if files is not None:
+    ingredient_button = st.button('Get Ingredients!')
+    
+    if ingredient_button:
         with st.spinner("Loading..."):
             for file in files:
                 # Read the image
@@ -151,51 +153,54 @@ def recipe_recommender_page():
         default_index=0,
         orientation="horizontal",
     )
+    
+    recipe_model: Model = RECIPE_MODEL_FAC[recipe_arch]()
+    ingredients = ", ".join(ingredients)
+    if ingredients is not None:
+        if recipe_arch == "TFIDF Vectorizer":
+            recipe_button = st.button('Get Recipes!')
+            
+            if recipe_button:
+                with st.spinner('Loading...'):
+                    output = recipe_model.format_output(ingredients)
+                st.write(output)
+        elif recipe_arch == "Doc2Vec Model":
+            cuisine = recipe_model.get_cuisine(ingredients)
 
-    recipe_model: Model = RECIPE_MODEL_FAC[recipe_arch]
-    if recipe_arch == "TFIDF Vectorizer":
-        st.write(recipe_model.format_output(", ".join(ingredients)))
-    elif recipe_arch == "Doc2Vec Model":
-        recipe_model2: Model2 = RECIPE_MODEL_FAC[recipe_arch]
-        if text_inp_ingredients is not None:
-            with st.spinner("Loading..."):
-                cuisine = recipe_model2.get_cuisine(", ".join(ingredients))
-            st.write(cuisine)
-            text_inp_cuisine = st.text_input(
-            label="If you choose Doc2Vec, please select one cuisine type,..."
-            )
-        if text_inp_cuisine is not None:
-            with st.spinner("Loading..."):
-                recipes = recipe_model2.get_recipes(", ".join(ingredients),text_inp_cuisine)
-            st.write(recipes)
-    elif recipe_arch == "Attention Encoder-Decoder":
-        calorie = st.selectbox('#### What calorie level are you currently aiming for?',('<Select>','Low', 'Medium', 'High'))
-        if calorie == '<Select>':
-            st.error('Please select a calorie level.')
-        food = st.text_input('#### What food are you craving for now?', placeholder='Big Mac Pizza')
-        ingredient = st.text_input('#### Please let me know what ingredients you have now.', placeholder='Beef, Thousand Island, Cheese')
-        
-        calorie_mapping = {
-            '<Select>': None,
-            'Low': 0,
-            'Medium': 1,
-            'High': 2
-        }
-        calorie_value = calorie_mapping[calorie]
-        food_value = food.strip()
-        ingredient_value = [item.strip() for item in ingredient.split(",")]
+            cuisine_option = st.selectbox("Please select cuisine type?", ['<Select>', *cuisine], key='cuisine_option')
+            
+            if cuisine_option != '<Select>':
+                with st.spinner("Loading..."):
+                    recipes = recipe_model.get_recipes(ingredients, cuisine_option)
+                st.write(recipes)
 
-        print(calorie_value)
-        print(food_value)
-        print(ingredient_value)
+        elif recipe_arch == "Attention Encoder-Decoder":
+            calorie = st.selectbox('#### What calorie level are you currently aiming for?',('<Select>','Low', 'Medium', 'High'))
+            if calorie == '<Select>':
+                st.error('Please select a calorie level.')
+            food = st.text_input('#### What food are you craving for now?', placeholder='Big Mac Pizza')
+            
+            calorie_mapping = {
+                '<Select>': None,
+                'Low': 0,
+                'Medium': 1,
+                'High': 2
+            }
+            calorie_value = calorie_mapping[calorie]
+            food_value = food.strip()
+            ingredient_value = [item.strip() for item in ingredients.split(", ")]
 
-        personalized_recipe = st.button('Find Out Now!')
+            print(calorie_value)
+            print(food_value)
+            print(ingredient_value)
 
-        if (personalized_recipe):
-            ans = st.success('Please wait for a moment')
-            model, logit_mod, sample_method, ingr_map, memory_tensor_map = initiate_model()
-            answer = attention_inference(food_value, ingredient_value, calorie_value, model, logit_mod, sample_method, ingr_map, memory_tensor_map)
-            ans.success(answer)
+            personalized_recipe = st.button('Find Out Now!')
+
+            if (personalized_recipe):
+                ans = st.success('Please wait for a moment')
+                model, logit_mod, sample_method, ingr_map, memory_tensor_map = initiate_model()
+                answer = attention_inference(food_value, ingredient_value, calorie_value, model, logit_mod, sample_method, ingr_map, memory_tensor_map)
+                ans.success(answer)
 
 
 # Make a prediction
