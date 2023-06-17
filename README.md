@@ -1,4 +1,4 @@
-# Recipe and Restaurant Recommendation System (RecRes)
+# Recipe Recommendation System (RecRes)
 
 ## Demo
 
